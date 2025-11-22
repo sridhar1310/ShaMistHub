@@ -1,0 +1,25 @@
+{
+  "name": "shamisthub-backend",
+  "version": "1.0.0",
+  "description": "Backend server for Sha Mist Hub e-commerce",
+  "main": "server/server.js",
+  "scripts": {
+    "server": "node server/server.js",
+    "dev": "nodemon server/server.js",
+    "client": "npx serve",
+    "dev:all": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "keywords": ["ecommerce", "handcraft", "gifts"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^8.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "concurrently": "^8.2.2"
+  }
+}

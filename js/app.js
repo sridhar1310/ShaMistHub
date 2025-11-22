@@ -1,111 +1,71 @@
 // App.js
 
-// Default Data for Initialization
-// Default Data for Initialization
-const defaultProducts = [
-    {
-        id: 1,
-        name: "Earthen Vase",
-        price: 3500.00,
-        images: [
-            "https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1581783342308-f792ca438912?q=80&w=800&auto=format&fit=crop"
-        ],
-        category: "Decors",
-        description: "Hand-thrown on a potter's wheel, this unique earthen vase brings a touch of raw nature into your home."
-    },
-    {
-        id: 2,
-        name: "Woven Seagrass Basket",
-        price: 2500.00,
-        images: [
-            "https://images.unsplash.com/photo-1605733513597-a8f8341084e6?q=80&w=800&auto=format&fit=crop"
-        ],
-        category: "Decors",
-        description: "Natural seagrass woven into a sturdy and stylish basket for all your storage needs."
-    },
-    {
-        id: 3,
-        name: "Lavender Artisan Soap",
-        price: 450.00,
-        images: [
-            "https://images.unsplash.com/photo-1590736704728-f4730bb30770?q=80&w=800&auto=format&fit=crop"
-        ],
-        category: "Gifts",
-        description: "Handmade soap with real lavender buds and essential oils for a calming bath experience."
-    },
-    {
-        id: 4,
-        name: "Ceramic Mug Set",
-        price: 1200.00,
-        images: [
-            "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=800&auto=format&fit=crop"
-        ],
-        category: "Gifts",
-        description: "A set of two beautifully glazed ceramic mugs, perfect for your morning coffee."
-    },
-    {
-        id: 5,
-        name: "Macrame Wall Hanging",
-        price: 4200.00,
-        images: [
-            "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=800&auto=format&fit=crop"
-        ],
-        category: "Decors",
-        description: "Intricate macrame knotting creates this stunning bohemian wall piece."
-    },
-    {
-        id: 6,
-        name: "Wooden Serving Board",
-        price: 3000.00,
-        images: [
-            "https://images.unsplash.com/photo-1603653856395-084007e5d96e?q=80&w=800&auto=format&fit=crop"
-        ],
-        category: "Decors",
-        description: "Solid acacia wood serving board, treated with food-safe oil."
-    }
-];
+// API Configuration
+const API_URL = 'http://localhost:5001/api';
 
 // State Management
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
-let products = JSON.parse(localStorage.getItem('products'));
+let products = [];
 
-// Initialize Products if empty
-if (!products || products.length === 0) {
-    products = defaultProducts;
-    localStorage.setItem('products', JSON.stringify(products));
-} else {
-    // Migration: Convert single image string to images array
-    let migrated = false;
-    products = products.map(p => {
-        // Image Migration
-        if (!p.images && p.image) {
-            p.images = [p.image];
-            delete p.image;
-            migrated = true;
-        }
+// API Functions
+async function fetchProducts() {
+    try {
+        const response = await fetch(`${API_URL}/products`);
+        if (!response.ok) throw new Error('Failed to fetch products');
+        products = await response.json();
+        // Convert MongoDB _id to id for compatibility
+        products = products.map(p => ({ ...p, id: p._id }));
+        return products;
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        // Fallback to empty array if server is not running
+        products = [];
+        return products;
+    }
+}
 
-        // Category Migration
-        const categoryMap = {
-            "Home Decor": "Decors",
-            "Kitchen": "Decors",
-            "Storage": "Decors",
-            "Wall Art": "Decors",
-            "Self Care": "Gifts"
-        };
+async function createProduct(productData) {
+    try {
+        const response = await fetch(`${API_URL}/products`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(productData)
+        });
+        if (!response.ok) throw new Error('Failed to create product');
+        const newProduct = await response.json();
+        return { ...newProduct, id: newProduct._id };
+    } catch (error) {
+        console.error('Error creating product:', error);
+        throw error;
+    }
+}
 
-        if (categoryMap[p.category]) {
-            p.category = categoryMap[p.category];
-            migrated = true;
-        }
+async function updateProduct(id, productData) {
+    try {
+        const response = await fetch(`${API_URL}/products/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(productData)
+        });
+        if (!response.ok) throw new Error('Failed to update product');
+        const updatedProduct = await response.json();
+        return { ...updatedProduct, id: updatedProduct._id };
+    } catch (error) {
+        console.error('Error updating product:', error);
+        throw error;
+    }
+}
 
-        return p;
-    });
-
-    if (migrated) {
-        localStorage.setItem('products', JSON.stringify(products));
-        // Force reload to reflect changes if we are on a page that renders products immediately
-        // But since this runs at top level, subsequent render calls will use updated data.
+async function deleteProductAPI(id) {
+    try {
+        const response = await fetch(`${API_URL}/products/${id}`, {
+            method: 'DELETE'
+        });
+        if (!response.ok) throw new Error('Failed to delete product');
+        return await response.json();
+    } catch (error) {
+        console.error('Error deleting product:', error);
+        throw error;
     }
 }
 
@@ -117,8 +77,11 @@ const cartContent = document.getElementById('cart-content');
 const adminProductTable = document.getElementById('admin-product-table');
 
 // Init
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     updateCartCount();
+
+    // Fetch products from API
+    await fetchProducts();
 
     // Home Page: Featured
     if (featuredContainer) {
@@ -144,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Admin Page
     if (adminProductTable) {
         checkAdminAuth();
-        renderAdminProducts();
+        await renderAdminProducts();
     }
 });
 
@@ -403,23 +366,13 @@ function closeDeleteModal() {
     productToDeleteId = null;
 }
 
-function confirmDelete() {
+async function confirmDelete() {
     if (productToDeleteId) {
         try {
-            // Filter out the product with the matching ID
-            const initialLength = products.length;
-            products = products.filter(p => p.id !== productToDeleteId);
-
-            if (products.length === initialLength) {
-                console.warn(`Product with ID ${productToDeleteId} not found.`);
-                alert('Error: Product not found.');
-                closeDeleteModal();
-                return;
-            }
-
-            localStorage.setItem('products', JSON.stringify(products));
-            renderAdminProducts();
-            console.log(`Product ${productToDeleteId} deleted successfully.`);
+            await deleteProductAPI(productToDeleteId);
+            alert('Product deleted successfully!');
+            await fetchProducts();
+            await renderAdminProducts();
             closeDeleteModal();
         } catch (e) {
             console.error('Error deleting product:', e);
@@ -458,7 +411,7 @@ function closeModal() {
     document.getElementById('product-modal').style.display = 'none';
 }
 
-function saveProduct(e) {
+async function saveProduct(e) {
     e.preventDefault();
     const id = document.getElementById('product-id').value;
     const name = document.getElementById('product-name').value;
@@ -469,21 +422,25 @@ function saveProduct(e) {
 
     const images = imageInput ? imageInput.split(',').map(url => url.trim()).filter(url => url.length > 0) : ['https://via.placeholder.com/300'];
 
-    if (id) {
-        // Edit
-        const index = products.findIndex(p => p.id == id);
-        if (index !== -1) {
-            products[index] = { ...products[index], name, price, category, description, images };
-        }
-    } else {
-        // Add
-        const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-        products.push({ id: newId, name, price, category, description, images });
-    }
+    const productData = { name, price, category, description, images };
 
-    localStorage.setItem('products', JSON.stringify(products));
-    closeModal();
-    renderAdminProducts();
+    try {
+        if (id) {
+            // Edit existing product
+            await updateProduct(id, productData);
+            alert('Product updated successfully!');
+        } else {
+            // Add new product
+            await createProduct(productData);
+            alert('Product added successfully!');
+        }
+
+        closeModal();
+        await fetchProducts();
+        await renderAdminProducts();
+    } catch (error) {
+        alert('Error saving product: ' + error.message);
+    }
 }
 
 // Global scope for HTML onclick access
