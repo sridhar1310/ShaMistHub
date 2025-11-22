@@ -1,7 +1,13 @@
 // App.js
 
 // API Configuration
-const API_URL = 'http://localhost:5001/api';
+// Automatically detect if running locally or in production
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_URL = isLocalhost
+    ? 'http://localhost:5001/api'
+    : 'https://shamisthub-backend.onrender.com/api'; // Update this URL after deploying to Render
+
+console.log('API URL:', API_URL);
 
 // State Management
 let cart = JSON.parse(localStorage.getItem('cart')) || [];

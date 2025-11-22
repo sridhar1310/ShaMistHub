@@ -3,13 +3,21 @@
   "version": "1.0.0",
   "description": "Backend server for Sha Mist Hub e-commerce",
   "main": "server/server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
+    "start": "node server/server.js",
     "server": "node server/server.js",
     "dev": "nodemon server/server.js",
     "client": "npx serve",
     "dev:all": "concurrently \"npm run server\" \"npm run client\""
   },
-  "keywords": ["ecommerce", "handcraft", "gifts"],
+  "keywords": [
+    "ecommerce",
+    "handcraft",
+    "gifts"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
