@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earthen Vase | Sha Mist Hub</title>
+    <link rel="icon" href="assets/logo.jpg" type="image/jpeg">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        .product-detail {
+            padding: 120px 0 80px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .detail-image {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .detail-info h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: var(--color-charcoal);
+        }
+
+        .detail-price {
+            font-size: 1.5rem;
+            color: var(--color-sage);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .detail-desc {
+            margin-bottom: 30px;
+            color: var(--color-text-muted);
+            font-size: 1.1rem;
+        }
+
+        .meta-info {
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+
+        .meta-item {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .meta-label {
+            font-weight: 600;
+            width: 120px;
+            color: var(--color-charcoal);
+        }
+
+        @media (max-width: 768px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .detail-info h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <img src="assets/logo.jpg" alt="Sha Mist Hub" class="logo-img">
+                    Sha Mist Hub
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html" class="active">Shop</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <div class="cart-icon" onclick="window.location.href='cart.html'">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-count">0</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Product Detail -->
+    <section class="product-detail">
+        <div class="container">
+            <div class="detail-grid">
+                <div class="detail-image-container">
+                    <div class="detail-image">
+                        <img id="main-image" src="https://via.placeholder.com/800" alt="Product Image">
+                    </div>
+                    <div class="thumbnail-container" id="thumbnail-container"
+                        style="display: flex; gap: 10px; margin-top: 20px; overflow-x: auto; padding-bottom: 10px;">
+                        <!-- Thumbnails injected by JS -->
+                    </div>
+                </div>
+                <div class="detail-info">
+                    <h1 id="detail-name">Product Name</h1>
+                    <div class="detail-price" id="detail-price">₹0.00</div>
+                    <p class="detail-desc" id="detail-desc">Description...</p>
+
+                    <div class="meta-info">
+                        <div class="meta-item">
+                            <span class="meta-label">Category:</span>
+                            <span id="detail-category">Category</span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" id="add-to-cart-btn" style="width: 100%; padding: 16px;">Add to
+                        Cart</button>
+                </div>
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    // Get Product ID from URL (simulated for now, assuming ID 1 or passed via some method)
+                    // For this static demo, we'll just pick the first product or a random one
+                    // In a real app, we'd parse ?id=1 from URL. 
+                    // Let's try to find a way to show a specific product.
+                    // Since we don't have URL routing, we'll default to the first product in the list
+                    // or check if one was clicked (stored in localStorage maybe?)
+
+                    // BETTER APPROACH: Check if 'viewProductId' is set in localStorage
+                    const viewId = localStorage.getItem('viewProductId');
+                    const products = JSON.parse(localStorage.getItem('products')) || [];
+
+                    const product = products.find(p => p.id == viewId) || products[0];
+
+                    if (product) {
+                        document.title = `${product.name} | Sha Mist Hub`;
+                        document.getElementById('main-image').src = product.images[0];
+                        document.getElementById('detail-name').textContent = product.name;
+                        document.getElementById('detail-price').textContent = '₹' + product.price.toLocaleString('en-IN');
+                        document.getElementById('detail-desc').textContent = product.description || 'No description available.';
+                        document.getElementById('detail-category').textContent = product.category;
+
+                        const btn = document.getElementById('add-to-cart-btn');
+                        btn.onclick = () => addToCart(product.id);
+
+                        // Render Thumbnails
+                        const thumbContainer = document.getElementById('thumbnail-container');
+                        if (product.images.length > 1) {
+                            thumbContainer.innerHTML = product.images.map((img, index) => `
+                                <img src="${img}" 
+                                     class="thumbnail ${index === 0 ? 'active' : ''}" 
+                                     onclick="changeMainImage('${img}', this)"
+                                     style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid ${index === 0 ? 'var(--color-sage)' : 'transparent'}; transition: all 0.3s;">
+                            `).join('');
+                        } else {
+                            thumbContainer.style.display = 'none';
+                        }
+                    }
+                });
+
+                function changeMainImage(src, thumb) {
+                    document.getElementById('main-image').src = src;
+                    document.querySelectorAll('.thumbnail').forEach(t => t.style.borderColor = 'transparent');
+                    thumb.style.borderColor = 'var(--color-sage)';
+                }
+            </script>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h4>Sha Mist Hub</h4>
+                    <p>Celebrating the beauty of imperfection and the warmth of human touch in every object.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="#">All Products</a></li>
+                        <li><a href="#">New Arrivals</a></li>
+                        <li><a href="#">Best Sellers</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Help</h4>
+                    <ul>
+                        <li><a href="#">Shipping & Returns</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="https://www.instagram.com/sha.mist_hub/" target="_blank"><i
+                                    class="fab fa-instagram"></i> Instagram</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Sha Mist Hub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>

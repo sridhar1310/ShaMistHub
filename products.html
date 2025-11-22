@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop | Sha Mist Hub</title>
+    <link rel="icon" href="assets/logo.jpg" type="image/jpeg">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <img src="assets/logo.jpg" alt="Sha Mist Hub" class="logo-img">
+                    Sha Mist Hub
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html" class="active">Shop</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <div class="cart-icon" onclick="window.location.href='cart.html'">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-count">0</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header"
+        style="padding-top: 120px; padding-bottom: 40px; text-align: center; background-color: var(--color-cream);">
+        <div class="container">
+            <h1>All Collections</h1>
+            <p style="color: var(--color-text-muted); margin-top: 10px;">Explore our full range of handcrafted
+                treasures.</p>
+        </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="shop-section" style="padding: 40px 0 80px;">
+        <div class="container">
+            <!-- Filters (Visual only for now) -->
+            <div class="filters" style="margin-bottom: 40px; display: flex; justify-content: center; gap: 20px;">
+                <button class="btn btn-secondary" style="border-radius: 20px; padding: 8px 24px;">All</button>
+                <button class="btn btn-secondary"
+                    style="border-radius: 20px; padding: 8px 24px; border-color: transparent;">Home Decor</button>
+                <button class="btn btn-secondary"
+                    style="border-radius: 20px; padding: 8px 24px; border-color: transparent;">Kitchen</button>
+                <button class="btn btn-secondary"
+                    style="border-radius: 20px; padding: 8px 24px; border-color: transparent;">Self Care</button>
+            </div>
+
+            <div class="product-grid" id="product-grid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h4>Sha Mist Hub</h4>
+                    <p>Celebrating the beauty of imperfection and the warmth of human touch in every object.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="#">All Products</a></li>
+                        <li><a href="#">New Arrivals</a></li>
+                        <li><a href="#">Best Sellers</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Help</h4>
+                    <ul>
+                        <li><a href="#">Shipping & Returns</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="https://www.instagram.com/sha.mist_hub/" target="_blank"><i
+                                    class="fab fa-instagram"></i> Instagram</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Sha Mist Hub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
