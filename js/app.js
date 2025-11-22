@@ -5,7 +5,7 @@
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_URL = isLocalhost
     ? 'http://localhost:5001/api'
-    : 'https://shamisthub-backend.onrender.com/api'; // Update this URL after deploying to Render
+    : 'https://shamisthub.onrender.com/api';
 
 console.log('API URL:', API_URL);
 
